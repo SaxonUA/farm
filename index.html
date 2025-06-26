@@ -16,7 +16,7 @@
 
     .widget-box {
       width: fit-content;
-     background: rgba(0, 0, 0, 0.6);
+      background: rgba(0, 0, 0, 0.6);
       border: 4px solid #FFA500;
       border-radius: 20px;
       box-shadow: 0 0 30px #FFA500;
@@ -27,12 +27,15 @@
       box-sizing: border-box;
     }
 
-    .header-text {
+     .header-text {
       font-size: 40px;
+      font-weight: bold;
       color: #FFA500;
       margin-bottom: 15px;
-      text-shadow: 0 0 10px #FFA500;
-    }
+      text-shadow: 
+      2px 2px 0 black,  /* чорна тінь */
+      0 0 10px #FFA500; /* помаранчева світлова тінь */
+}
 
     .flip-container {
       display: flex;
@@ -93,6 +96,11 @@
       margin-bottom: 5px;
     }
 
+    .menu-list div:first-child {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
     .menu-list b.highlight {
       color: #ff9900;
     }
@@ -125,7 +133,7 @@
       <div id="digit-group" class="digit-group"></div>
     </div>
     <div class="menu-list">
-      <div>Впливання глядачів</div>
+      <div><b class="highlight">Впливання глядачів</b></div>
       <div>1. За кожну 1 грн — <b class="highlight">+ 1 000</b> срібла</div>
       <div>2. За кожен лайк — <b class="highlight">+5 000</b> срібла</div>
       <div>3. За кожен тап TikTok — <b class="highlight">+5</b> срібла</div>
