@@ -1,1 +1,190 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>WOT Кредити (Flip Animation)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .widget-box {
+      width: fit-content;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(30, 30, 30, 0.7));
+      border: 3px solid #FFA500;
+      border-radius: 20px;
+      box-shadow: 0 0 15px #FFA500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 25px;
+      box-sizing: border-box;
+    }
+
+    .header-text {
+      font-size: 30px;
+      color: #FFA500;
+      margin-bottom: 10px;
+      text-shadow: 0 0 8px black;
+    }
+
+    .flip-container {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .flip-clock-wrapper {
+      background-color: transparent;
+      display: flex;
+    }
+
+    .digit-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    .digit-separator {
+      font-size: 48px;
+      color: black;
+      padding: 0 5px;
+      text-shadow: 0 0 5px black;
+    }
+
+    .flip-clock-wrapper ul li a div div.inn {
+      font-size: 60px;
+      letter-spacing: 2px;
+    }
+
+    .flip-clock-wrapper ul {
+      margin-right: 0;
+    }
+
+    .flip-clock-divider {
+      display: none !important;
+    }
+
+    .menu-list {
+      font-size: 14px;
+      color: #cccccc;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 12px;
+      border-radius: 10px;
+      text-align: center;
+      width: 100%;
+      margin-top: 10px;
+      box-shadow: inset 0 0 2px #222;
+      text-shadow: 0 0 3px black;
+    }
+
+    .menu-list div {
+      margin-bottom: 4px;
+    }
+
+    .increase-effect {
+      animation: flashGreen 0.8s ease;
+    }
+
+    .decrease-effect {
+      animation: flashRed 0.8s ease;
+    }
+
+    @keyframes flashGreen {
+      0% { filter: drop-shadow(0 0 5px lime); transform: scale(1.05); }
+      50% { filter: drop-shadow(0 0 15px lime); }
+      100% { filter: none; transform: scale(1); }
+    }
+
+    @keyframes flashRed {
+      0% { filter: drop-shadow(0 0 5px red); transform: scale(1.05); }
+      50% { filter: drop-shadow(0 0 15px red); }
+      100% { filter: none; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="widget-box">
+    <div class="header-text">💰 Залишилось нафармити 💰</div>
+    <div class="flip-container">
+      <div id="digit-group" class="digit-group"></div>
+    </div>
+    <div class="menu-list">
+      <div>1. За кожну 1 грн — <b>+200</b> срібла</div>
+      <div>2. За кожен лайк — <b>+200</b> срібла</div>
+      <div>3. За кожен тап TikTok — <b>+1</b> срібла</div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
+  <script>
+    let currentValue = null;
+    const groupContainer = document.getElementById('digit-group');
+
+    function createFlipGroup(numberStr) {
+      groupContainer.innerHTML = '';
+      const groups = [];
+
+      while (numberStr.length % 3 !== 0) numberStr = '0' + numberStr;
+      for (let i = 0; i < numberStr.length; i += 3) {
+        groups.push(numberStr.substr(i, 3));
+      }
+
+      groups.forEach((group, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flip-clock-wrapper';
+
+        const flip = new FlipClock(wrapper, group, {
+          clockFace: 'Counter',
+          autoStart: false
+        });
+        flip.setValue(group);
+        groupContainer.appendChild(wrapper);
+
+        if (idx < groups.length - 1) {
+          const sep = document.createElement('div');
+          sep.className = 'digit-separator';
+          sep.textContent = '’';
+          groupContainer.appendChild(sep);
+        }
+      });
+    }
+
+    async function fetchSilver() {
+      const sheetId = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
+      const sheetName = 'FARM';
+      const cellRange = 'C10';
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&range=${cellRange}`;
+
+      try {
+        const response = await fetch(url);
+        const text = await response.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const newValue = Math.round(json.table.rows[0].c[0].v);
+
+        if (currentValue !== newValue) {
+          const wrapper = document.querySelector('.flip-container');
+          const effect = newValue > currentValue ? 'increase-effect' : 'decrease-effect';
+          wrapper.classList.remove('increase-effect', 'decrease-effect');
+          void wrapper.offsetWidth;
+          wrapper.classList.add(effect);
+          createFlipGroup(newValue.toString());
+          currentValue = newValue;
+        }
+      } catch (e) {
+        console.error("Помилка завантаження: ", e);
+      }
+    }
+
+    fetchSilver();
+    setInterval(fetchSilver, 15000);
+  </script>
+</body>
+</html>
