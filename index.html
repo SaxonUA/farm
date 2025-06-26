@@ -5,7 +5,7 @@
   <title>WOT Кредити (Flip Animation)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
 
     body {
       margin: 0;
@@ -16,51 +16,56 @@
 
     .widget-box {
       width: fit-content;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(30, 30, 30, 0.7));
-      border: 3px solid #FFA500;
+      background: radial-gradient(circle, #111 0%, #000 100%);
+      border: 4px solid #FFA500;
       border-radius: 20px;
-      box-shadow: 0 0 15px #FFA500;
+      box-shadow: 0 0 30px #FFA500;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 15px 25px;
+      padding: 20px 30px;
       box-sizing: border-box;
     }
 
     .header-text {
-      font-size: 30px;
+      font-size: 40px;
       color: #FFA500;
-      margin-bottom: 10px;
-      text-shadow: 0 0 8px black;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #FFA500;
     }
 
     .flip-container {
       display: flex;
-      gap: 10px;
+      gap: 14px;
       justify-content: center;
       align-items: center;
     }
 
     .flip-clock-wrapper {
-      background-color: transparent;
-      display: flex;
+      background-color: rgba(0, 0, 0, 0.3);
+      border: 2px solid #FFA500;
+      border-radius: 10px;
+      padding: 5px;
+      box-shadow: 0 0 10px #FFA500 inset;
     }
 
     .digit-group {
       display: flex;
-      gap: 4px;
+      gap: 10px;
     }
 
     .digit-separator {
-      font-size: 48px;
-      color: black;
-      padding: 0 5px;
-      text-shadow: 0 0 5px black;
+      font-size: 52px;
+      color: #FFA500;
+      text-shadow: 0 0 6px #FFA500;
     }
 
     .flip-clock-wrapper ul li a div div.inn {
-      font-size: 60px;
-      letter-spacing: 2px;
+      font-size: 100px !important;
+      color: #fff;
+      background: linear-gradient(to bottom, #111, #222);
+      border-radius: 8px;
+      text-shadow: 0 0 6px #FFA500;
     }
 
     .flip-clock-wrapper ul {
@@ -75,37 +80,41 @@
       font-size: 20px;
       color: #cccccc;
       background: rgba(0, 0, 0, 0.2);
-      padding: 8px 12px;
-      border-radius: 10px;
+      padding: 10px 15px;
+      border-radius: 12px;
       text-align: center;
       width: 100%;
-      margin-top: 10px;
+      margin-top: 15px;
       box-shadow: inset 0 0 2px #222;
       text-shadow: 0 0 3px black;
     }
 
     .menu-list div {
-      margin-bottom: 4px;
+      margin-bottom: 5px;
     }
 
-    .increase-effect {
-      animation: flashGreen 0.8s ease;
+    .menu-list b.highlight {
+      color: #ff9900;
     }
 
-    .decrease-effect {
-      animation: flashRed 0.8s ease;
+    .flip-container.increase-effect {
+      animation: flashGlowGreen 0.8s ease;
     }
 
-    @keyframes flashGreen {
-      0% { filter: drop-shadow(0 0 5px lime); transform: scale(1.05); }
-      50% { filter: drop-shadow(0 0 15px lime); }
-      100% { filter: none; transform: scale(1); }
+    .flip-container.decrease-effect {
+      animation: flashGlowRed 0.8s ease;
     }
 
-    @keyframes flashRed {
-      0% { filter: drop-shadow(0 0 5px red); transform: scale(1.05); }
-      50% { filter: drop-shadow(0 0 15px red); }
-      100% { filter: none; transform: scale(1); }
+    @keyframes flashGlowGreen {
+      0% { box-shadow: 0 0 5px lime; transform: scale(1.02); }
+      50% { box-shadow: 0 0 25px lime; }
+      100% { box-shadow: none; transform: scale(1); }
+    }
+
+    @keyframes flashGlowRed {
+      0% { box-shadow: 0 0 5px red; transform: scale(1.02); }
+      50% { box-shadow: 0 0 25px red; }
+      100% { box-shadow: none; transform: scale(1); }
     }
   </style>
 </head>
@@ -116,9 +125,10 @@
       <div id="digit-group" class="digit-group"></div>
     </div>
     <div class="menu-list">
-      <div>1. За кожну 1 грн — <b>+200</b> срібла</div>
-      <div>2. За кожен лайк — <b>+200</b> срібла</div>
-      <div>3. За кожен тап TikTok — <b>+1</b> срібла</div>
+      <div>Впливання глядачів</div>
+      <div>1. За кожну 1 грн — <b class="highlight">+ 1 000</b> срібла</div>
+      <div>2. За кожен лайк — <b class="highlight">+5 000</b> срібла</div>
+      <div>3. За кожен тап TikTok — <b class="highlight">+5</b> срібла</div>
     </div>
   </div>
 
@@ -131,7 +141,6 @@
     function createFlipGroup(numberStr) {
       groupContainer.innerHTML = '';
       const groups = [];
-
       while (numberStr.length % 3 !== 0) numberStr = '0' + numberStr;
       for (let i = 0; i < numberStr.length; i += 3) {
         groups.push(numberStr.substr(i, 3));
@@ -151,7 +160,7 @@
         if (idx < groups.length - 1) {
           const sep = document.createElement('div');
           sep.className = 'digit-separator';
-          sep.textContent = '’';
+          sep.textContent = "’";
           groupContainer.appendChild(sep);
         }
       });
